@@ -1,0 +1,18 @@
+baseurl: "srcmaxim.io"
+title: "Maksym Koval"
+languageCode: "en-us"
+theme: "hyde"
+
+Menus:
+  main:
+    - Name: "About"
+      URL: "https://srcmaxim.io/about/"
+    - Name: "Github"
+      URL: "https://github.com/srcmaxim/"
+    - Name: "LinkedIn"
+      URL: "https://www.linkedin.com/in/maksim-koval/"
+
+params:
+  description: "blog about Java, AWS, Quarkus, GraalVM and DynamoDB"
+  disqusShortname: srcmaxim-io
+  googleAnalytics: UA-177309644-1
