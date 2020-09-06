@@ -1,4 +1,4 @@
-name: Build Hugo
+name: Build and Deploy Hugo
 on: [push]
 jobs:
   build:
