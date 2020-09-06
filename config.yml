@@ -14,5 +14,6 @@ Menus:
 
 params:
   description: "blog about Java, AWS, Quarkus, GraalVM and DynamoDB"
-  disqusShortname: srcmaxim-io
-  googleAnalytics: UA-177309644-1
+
+disqusShortname: srcmaxim-io
+googleAnalytics: UA-177309644-1
