@@ -18,6 +18,3 @@ Resources:
       HostedZoneConfig:
         Comment: !Join ['', ['Hosted zone for ', !Ref 'DomainName']]
       Name: !Ref 'DomainName'
-      HostedZoneTags:
-      - Key: Application
-        Value: Blog

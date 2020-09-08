@@ -4,10 +4,9 @@ date: 2020-09-05
 draft: false
 ---
 
-I’m Maksym Koval.
+Hi! I’m Maksym Koval. I work as a Java Developer in Kharkiv, Ukraine :ukraine:.
+ 
+I'm inspired by todays technologies and I want to share my thoughts with you.  
+Also I like doing sports. On weekends you can find me running and biking around city.  
 
-I love mastery. Sometimes it’s mastery of an athletic pursuit, others times it’s understanding of history or scientific principles. Complex systems entertain me. Simple solutions inspire me. 
-
-Any given weekend you might find me running a half marathon, reading a treatise on ETOPS, hiking a remote Norwegian fjord, racing a half marathon, or drafting a meetup presentation.
-
-Drop me a line if you’re a like minded soul.
+All code examples and other projects you can find here in my [GitHub](https://github.com/srcmaxim/).

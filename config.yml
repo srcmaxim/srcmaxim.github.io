@@ -3,6 +3,11 @@ title: "Maksym Koval"
 languageCode: "en-us"
 theme: "hyde"
 
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
 Menus:
   main:
     - Name: "About"

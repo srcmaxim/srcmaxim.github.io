@@ -1,36 +1,38 @@
 ---
-title: "How this blog was build"
+title: "Deploy Hugo site to AWS"
 date: 2020-09-06
 draft: false
 ---
 
-I've build this blog in about 1 day and I want to share with you the whole process.  
+[Hugo](https://gohugo.io/) is a fast and modern static site generator written in Go.
+It builds pages in under a second. And there are no dependencies to install. It seems like a good idea to use it as a base for a site.
 
-## Hugo is for static site generation
+I tryed to use [Jekyll](https://jekyllrb.com/), but I have some issues with it. 
+Using Jekyll isn't staringht forward, you need to install Ruby and Gem plugins and enshure right versioning. Themes for a site should be right versioned too.
 
-[Hugo](https://gohugo.io/) is a static site generator.  
-I tryed to use [Jekyll](https://jekyllrb.com/) but I have some issues with it. 
-Hugo has no dependencies (you need to install Ruby and Gem plugins to run Jekyll). 
-Hugo is fast (full CI/CD build last 1 minute) and also there was no versioning issue, so i chose it 😉. 
+Hugo sites can be hosted anywhere, including Github Pages, AWS S3, AWS CloudFront or other CDNs.
+In this articale, I’d show you how to build Hugo static site and deploy it to S3 and CloudFront.  
 
-1. To install Hugo run `brew install hugo` if on MacOs or `choco install hugo -y` if on Windows.
-2. Create a new site `hugo new site example.com`.  
-3. Add a theme 
+## Step 1. Setup Hugo 
+
+1. To install Hugo run `brew install hugo` or `choco install hugo` if you are on Windows.
+2. Create a new site with `hugo new site example.com`.  
+3. Hugo provides many awesome [themes](https://themes.gohugo.io/). To add a theme run
 
 ```bash
 $ cd example.com
 $ git init
 $ git submodule add https://github.com/budparr/gohugo-theme-ananke.git themes/ananke
 ```
-Then add theme to your `config.yml`:
+    
+4. Then add theme to your `config.yml`:
 
 ```bash
 $ echo 'theme: "ananke"' >> config.yml
 ```
 
-4. Add some content `hugo new posts/my-first-post.md`.
-
-Edit it like this:
+5. Add some content with `hugo new posts/my-first-post.md`.  
+And edit it like this:
 
 ```markdown
 ---
@@ -42,19 +44,19 @@ draft: true
 Hello World!!!
 ```
 
-5. Start Hugo server `hugo server -D`. http://localhost:1313/. Hugo will automatically update any content.
+5. Start Hugo server `hugo server -D`. http://localhost:1313/.  
+Hugo will automatically update any content.
 
 6. Build static pages `hugo -D` then all site will be created under `/public` directory.
 
-## AWS is for website
+## Step 2. Setup AWS
 
 AWS has a top noch tooling for building static websites. But unfortunatelly learing curve is very steep.
 I'll give you step by step explaation on how to create static website hosting on AWS.
 
-### Create Website with AWS 
+For hosting a website you need to create an Amazon Route 53 hosted zone. 
+At first you need to register a [new domain](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html).  
 
-For a website you need to create an Amazon Route 53 hosted zone. 
-At first you need to register a [new domain](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html). 
 Then, you can use following CloudFormation template to create a Hosted Zone.
 
 ```yaml
@@ -78,14 +80,14 @@ Resources:
       HostedZoneConfig:
         Comment: !Join ['', ['Hosted zone for ', !Ref 'DomainName']]
       Name: !Ref 'DomainName'
-      HostedZoneTags:
-      - Key: Application
-        Value: Blog
 ```
 
-Creates an S3 bucket configured for hosting a static website, 
-and a Route 53 DNS record pointing to the bucket.  
-For that you will need to provide ACM Certificate ARN in a format `arn:aws:acm:us-east-1:813315352955:certificate/1234567890` hosted in `us-east-1` zone. Also you will need your domain name, for example `example.com` and a hosted zone Id from the previous step. 
+Then we will creates a S3 bucket configured for hosting a static website, 
+and a CloudFront distribution with HTTPs.  
+
+For that you will need to provide ACM Certificate ARN in a format `arn:aws:acm:us-east-1:1234567890:certificate/1234567890` hosted in `us-east-1` zone. CloudFront uses `us-east-1` zone and `Z2FDTNDATAQYW2` CloudFront hoster zone id by default.  
+
+Also you will need your domain name, for example `example.com` and a hosted zone Id from the previous step. 
 
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
@@ -188,7 +190,7 @@ Resources:
       - Name: !Ref 'DomainName'
         Type: A
         AliasTarget:
-          HostedZoneId: Z2FDTNDATAQYW2 # Default Hosted Zone ID for CloudFront
+          HostedZoneId: Z2FDTNDATAQYW2 1️⃣
           DNSName: !GetAtt [WebsiteCloudfront, DomainName]
 
 Outputs:
@@ -206,14 +208,18 @@ Outputs:
     Description: Domain name
 ```
 
-So, that's about all!  
-If you want to setup CI/CD pipeline for a project just use following script:
+>1️⃣ Default Hosted Zone ID for CloudFront
+
+So, that's about all! You've deployed your website to S3 and CloudFront with HTTPs support.
+
+If you want to setup a CI/CD pipeline for a project, just use the following script:
 
 ```bash
-git sumodules init
-git sumodules update
-hugo -D
-aws s3 cp --delete public/ s3://example.com 
+git sumodules init 1️⃣
+git sumodules update 
+hugo -D 
+aws s3 cp --delete public/ s3://example.com 2️⃣
 ```
 
-This script will create the static site and deploy it to S3.
+>1️⃣ this will init and clone a theme to your code  
+2️⃣ this will deploy your site to S3 and CloudFront. New pages will be available based on CloudFront's `DefaultTTL`, `MaxTTL`
