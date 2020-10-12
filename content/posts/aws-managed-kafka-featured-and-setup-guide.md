@@ -81,7 +81,7 @@ Create CloudFormation Stack from [msk.cfn.yml](#code-refference) file below to c
 
 Also you can go through following optional steps to setup Kafka:
 1. Rewrite default configuration in (MSK Configuration Properties)[https://docs.aws.amazon.com/msk/latest/developerguide/msk-default-configuration.html]: 
-```yml
+```properties
 auto.create.topics.enable=true
 delete.topic.enable=true
 log.retention.hours=8
