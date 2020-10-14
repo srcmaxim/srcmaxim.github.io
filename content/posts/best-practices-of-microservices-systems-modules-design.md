@@ -96,7 +96,7 @@ allprojects {
 }
 ```
 
-1️⃣ Add a Maven Repo for JCenter
+>1️⃣ Add a Maven Repo for JCenter
 
 ## Add a library sub-project
 
@@ -140,7 +140,7 @@ dependencies {
 }
 ```
 
-1️⃣ Add `greeting-library` as a dependency for `greeter`
+>1️⃣ Add `greeting-library` as a dependency for `greeter`
 
 Add liblary to the root project:
 
@@ -192,7 +192,7 @@ dependencies {
 }
 ```
 
-1️⃣ Add a Maven repository
+>1️⃣ Add a Maven repository
 2️⃣ Add .bom as a platform dependency
 3️⃣ Use dependency without version. It will provided from .bom
 
