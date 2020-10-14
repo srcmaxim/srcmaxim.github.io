@@ -21,7 +21,7 @@ When two independently developed services are collaborating, changes to the supp
 
 ## Using Apache Avro for Consumer-driven testing
 
-But if you are starting fresh with Kafka, you’ll have the format of your choice. So which is best? There are many criteria here: efficiency, ease of use, support in different programming languages, and so on. In our own use we have found Apache Avro to be one of the better choices for stream data.
+If you are starting fresh with Kafka, you’ll have the format of your choice. So which is best? There are many criteria here: efficiency, ease of use, support in different programming languages, and so on. In our own use we have found Apache Avro to be one of the better choices for stream data.
 
 Avro is an open source data serialization system that helps with data exchange between systems, programming languages, and processing frameworks. Avro helps define a binary format for your data, as well as map it to the programming language of your choice.
 
@@ -125,7 +125,7 @@ You can found [code examples](https://github.com/srcmaxim/kafka-avro-integration
 
 ## Integratio tests using Kafka and Schema Registry
 
-Apache Kafka® producers write data to Kafka topics and Kafka consumers read data from Kafka topics. There is an implicit “contract” that producers write data with a schema that can be read by consumers, even as producers and consumers evolve their schemas. Schema Registry helps ensure that this contract is met with compatibility checks.
+Apache Kafka producers write data to Kafka topics and Kafka consumers read data from Kafka topics. There is an implicit “contract” that producers write data with a schema that can be read by consumers, even as producers and consumers evolve their schemas. Schema Registry helps ensure that this contract is met with compatibility checks.
 
 It is useful to think about schemas as APIs. Applications depend on APIs and expect any changes made to APIs are still compatible and applications can still run. Similarly, streaming applications depend on schemas and expect any changes made to schemas are still compatible and they can still run.
 
