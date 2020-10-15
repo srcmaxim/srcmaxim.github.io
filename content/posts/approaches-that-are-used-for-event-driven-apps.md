@@ -4,9 +4,9 @@ date: 2020-10-10
 draft: true
 ---
 
-Event-Driven architecture is widely popular distributed streaming platform that thousands of companies like New Relic, Uber, and Square use to build scalable, high-throughput, and reliable real-time streaming systems. 
+Event-Driven architecture is a widely popular distributed streaming platform that thousands of companies like New Relic, Uber, and Square use to build scalable, high-throughput, and reliable real-time streaming systems. 
 
-In this article I'd like to note approaches that are used for event-driven applications based on Kafka distributed streaming platform.
+In this article, I'd like to note approaches that are used for event-driven applications based on Kafka distributed streaming platform.
 
 ## Microservices patterns overview 
 
@@ -147,13 +147,13 @@ Topic configurations have a tremendous impact on the performance of Kafka cluste
 
 ### How to create topics in the right way
 
-That it is highly recommended to not use auto topic create for Streams, but to manually create all input/output topics before you start your Streams application.
+It is highly recommended not to use auto topic create for Streams, but to manually create all input/output topics before you start your Streams application.
 
 The topic configurations have a ‘server default’ property. These can be overridden at the point of topic creation or at later time in order to have topic-specific configuration.
 
 The example demonstrates topic creation from the console with a replication-factor of two and six partitions:
 
-- In Spring you should have `KafkaAdmin` bean in place to set up topics. Consider using `Topic` and `NewTopic` instead of using `Strign` for a topic key. If you have some other kind of application, you can run an init script that calls `bin/kafka-topics.sh` before starting your application or after Kafka setup.
+- In Spring you should have `KafkaAdmin` bean in place to set up topics. Consider using `Topic` and `NewTopic` instead of using `Strign` for a topic key. If you have some other kind of application, you can run an initial script that calls `bin/kafka-topics.sh` before starting your application or after Kafka setup.
 ```java
 @Bean
 public NewTopic topic1() {
@@ -163,7 +163,7 @@ public NewTopic topic1() {
             .build();
 }
 ```
-- In Kafka setup following props to enable dynamic topics creation:
+- In Kafka, set up the following props to enable dynamic topics creation:
 ```properties
 auto.create.topics.enable=true
 delete.topic.enable=false
@@ -173,7 +173,7 @@ num.partitions=2
 
 ### Use partitions for Kafka even inside integration tests
 
-It's hard to spot some bugs that can be seen only in production when `partitions` is'n set properly. Use the same config for topics for prod and test environtments.
+It's hard to spot some bugs that can be seen only in production when `partitions` isn't set properly. Use the same config for topics for prod and test environments.
 
 ```java
 @Bean
@@ -195,7 +195,7 @@ A tool for showing how Kafka processes data.
 
 The test-utils package provides a [TopologyTestDriver](https://www.confluent.io/blog/testing-kafka-streams/) that can be used to pipe data through a Topology that is either assembled manually using Processor API or via the DSL using StreamsBuilder. The test driver simulates the library runtime that continuously fetches records from input topics and processes them by traversing the topology. 
 
-You can use TopologyTestDriver in tests as a code or converts an ASCII Kafka Topology description into a hand drawn diagram: https://zz85.github.io/kafka-streams-viz/. 
+You can use TopologyTestDriver in tests as code or converts an ASCII Kafka Topology description into a hand drawn diagram: https://zz85.github.io/kafka-streams-viz/. 
 
 ```
 Topology
@@ -225,8 +225,8 @@ Kafka limits the max size of messages. The default value of the broker configura
 
 LinkedIn talked a long time ago about the pros and cons of two different approaches: Using 'Kafka only' vs. 'Kafka in conjunction with another data storage'. Especially outside the public cloud, most enterprises cannot simply use an S3 object store for big data.
 
-There is basically 2 types of implementation:
-- Chunking -- data is divided into chunks and then concateneted upon receiveing
+There are basically 2 types of implementation:
+- Chunking -- data is divided into chunks and then connected upon receiving
 - External Store -- data is stored outside of Kafka in Object Storage(S3)
 
 ### Chunking
@@ -246,15 +246,15 @@ The best way to send large messages is not to send them at all. If shared storag
 
 Kafka producer can be used to compress messages. If the original message is XML, there’s a good chance that the compressed message will not be very large at all. Use compression.codec and compressed.topics configuration parameters in the producer to enable compression. GZip and Snappy are both supported.
 
-Also you need to know how exactly you need to store your data. :
+In addition, you need to know how exactly you need to store your data:
 
-- if S3 versionining is enabled and files are stored with versions use MD5 hash alongside S3 key name for event, so you will receive exactly the same file as you saved in S3. That's because S3 has eventual consistency for PUTs of existing files. 
-- if random files are stored you don't have to store MD5 hash in event
+- if S3 versioning is enabled, and files are stored with versions use MD5 hash alongside S3 key name for event, you will receive exactly the same file as you saved in S3. That's because S3 has eventual consistency for PUTs of existing files. 
+- if random files are stored, you don't have to store MD5 hash in event
 
 Handling transactions for S3 writes can be archived in 2 ways:
-- write AWS Lambda that is trigerred upon receiving `S3:write` event
-- commit Kafka event after receiveing 200 OK from S3
+- write AWS Lambda that is triggered upon receiving `S3:write` event
+- commit Kafka event after receiving 200 OK from S3
 
-Handling transactions for S3 file processing. Reading and writing files to Kafka in one transaction can slow down your pipeline significantly. Better approach is to use [AWS Step Function](https://aws.amazon.com/step-functions) for handling S3 file processing. Generally it's more scalable solution.
+Handling transactions for S3 file processing. Reading and writing files to Kafka in one transaction can slow down your pipeline significantly. Better approach is to use [AWS Step Function](https://aws.amazon.com/step-functions) for handling S3 file processing. Generally it's a more scalable solution.
 
-AWS Step Functions makes it easy to sequence AWS Lambda functions and multiple AWS services. You can create and run a series of checkpointed and event-driven workflows that maintain the application state. The output of one step acts as an input to the next. Each step in your application executes in order. 
+AWS Step Function makes it easy to sequence AWS Lambda functions and multiple AWS services. You can create and run a series of checkpointed and event-driven workflows that maintain the application state. The output of one step acts as an input to the next. Each step in your application executes in order. 
