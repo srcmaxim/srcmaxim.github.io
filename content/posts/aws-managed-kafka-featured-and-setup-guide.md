@@ -80,21 +80,124 @@ and default routes for them in the private subnets.
 Create CloudFormation Stack from [msk.cfn.yml](#code-refference) file below to create AWS Managed Kafka.
 
 Also you can go through following optional steps to setup Kafka:
-1. Rewrite default configuration in (MSK Configuration Properties)[https://docs.aws.amazon.com/msk/latest/developerguide/msk-default-configuration.html]: 
+1. Rewrite default configuration in [MSK Configuration Properties](https://docs.aws.amazon.com/msk/latest/developerguide/msk-default-configuration.html): 
 ```properties
 auto.create.topics.enable=true
 delete.topic.enable=true
 log.retention.hours=8
 ```
-2. Enable Encryption within the cluster. Note that this can (impact the performance)[https://docs.aws.amazon.com/msk/latest/developerguide/msk-encryption.html] of the cluster in production.
+2. Enable Encryption within the cluster. Note that this can [impact the performance](https://docs.aws.amazon.com/msk/latest/developerguide/msk-encryption.html) of the cluster in production.
 
 > Tip: You **cannot enable encryption on an already created cluster**, nor can you turn it off on a cluster configured with encryption, you can only turn on encryption in-transit during cluster creation. Note that this can impact the performance of the cluster in production. If you don’t need this level of encryption consider leaving it off.
+
+#### Project architecture
+
+For now, we have the following architecture of the project:
+
+![Template Designer](/img/template-designer.png)
 
 ### Step 3: Run Workload
 
 Create CloudFormation Stack from [app.cfn.yml](#code-refference) file below to create AWS Managed Kafka.
 
 > 🔥 Don't forget to enable CAPABILITIES_IAM for CloudFormation script.
+
+#### Run console workload
+
+Here's an example of code to setup Kafka console producer and consumer.
+
+```bash
+
+sudo apt-get install jq java -y 1️⃣
+
+REGION=
+ACCOUNT_ID=
+CLUSTER_NAME=MSKCluster
+CLUSTER_ID=
+
+ZOOKEPER=$(aws kafka describe-cluster --region $REGION --cluster-arn arn:aws:kafka:eu-west-1:$ACCOUNT_ID:cluster/$CLUSTER_NAME/$CLUSTER_ID | jq ClusterInfo.ZookeeperConnectString) 2️⃣
+
+KAFKA=$(aws kafka get-bootstrap-brokers --region $REGION  --cluster-arn arn:aws:kafka:eu-west-1:$ACCOUNT_ID:cluster/$CLUSTER_NAME/$CLUSTER_ID | jq BootstrapBrokerString) 3️⃣
+KAFKA_SECURE=$(aws kafka get-bootstrap-brokers --region $REGION  --cluster-arn arn:aws:kafka:eu-west-1:$ACCOUNT_ID:cluster/$CLUSTER_NAME/$CLUSTER_ID | jq BootstrapBrokerString) 4️⃣
+
+
+wget https://archive.apache.org/dist/kafka/2.2.1/kafka_2.12-2.2.1.tgz 5️⃣
+tar -xzf kafka_2.12-2.2.1.tgz
+cd kafka_2.12-2.2.1
+
+bin/kafka-topics.sh --create --zookeeper $ZOOKEPER --replication-factor 2 --partitions 6 --topic click 6️⃣
+
+JDK_FOLDER=default-java
+/usr/lib/jvm/$JDK_FOLDER/jre/lib/security/cacerts /tmp/kafka.client.truststore.jks
+
+cat client.properties << EOF 7️⃣
+security.protocol=SSL ssl.truststore.location=/tmp/kafka.client.truststore.jks
+EOF
+
+./kafka-console-producer.sh --broker-list $KAFKA_SECURE --producer.config client.properties --topic click 8️⃣
+
+./kafka-console-consumer.sh --bootstrap-server $KAFKA_SECURE --consumer.config client.properties --topic click --from-beginning 9️⃣
+```
+
+> 1️⃣ Get [jq](https://stedolan.github.io/jq/) JSON processor and Java  
+2️⃣ Get connection string for Zookeper  
+3️⃣ Get connection string for plain Kafka  
+4️⃣ Get connection string for SSL Kafka  
+5️⃣ Get and unpack Kafka  
+6️⃣ Explicitly create topic `click` with replicationfactor of 2 and 6 partitions  
+8️⃣ Write to topic using console producer  
+9️⃣ Read from topic using console consumer
+
+#### Run application
+
+An a app we are going to run is a click counter. For exmple User1 click on the button. Then they will see how many times they clicked.
+
+```
+POST localhost:8080/api/v1/click
+
+{
+  "name": "User1"
+}
+
+GET localhost:8081/api/v1/click
+
+{
+  "User1": 1
+}
+```
+
+Here's an example of UML Sequence diagram, you can visualize it [here](https://www.websequencediagrams.com/)
+
+```uml
+title Kafka Clicker Application
+
+Web -> ClickReceiver: User with $name clicks
+ClickReceiver->Kafka: Click Event
+Kafka->ClickCounter: Click Event
+note right of ClickCounter: User $name saved and counted
+Web ->+ ClickCounter: Get all clicks request
+ClickCounter ->- Web: Get all clicks response
+```
+
+![Kafka Clicker Application](/img/kafka-clicker-application.png)
+
+You can run application with this scripts:
+
+```bash
+cd click-counter 1️⃣
+gradlew bootJar
+mv build/libs/click-counter*.jar ~/click-app/click-counter.jar
+cd click-receiver
+gradlew bootJar
+mv build/libs/click-receiver*.jar ~/click-app/click-receiver.jar
+
+cd ~/click-app 2️⃣
+java -jar click-counter.jar -Dspring.kafka.bootstrap-servers=$KAFKA_SECURE
+java -jar click-receiver.jar -Dspring.kafka.bootstrap-servers=$KAFKA_SECURE
+```
+
+> 1️⃣ Bulid apps  
+2️⃣ Run apps with Kafka bootstrap servers
 
 ### Code Refference
 
