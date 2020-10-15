@@ -6,12 +6,12 @@ draft: false
 
 ## Approaches for working with microservices
 
-So, microservices realize important modularity principles, leading to tangible benefits:
+Microservices implement important modularity principles, leading to tangible benefits:
 - Teams can work and scale independently.
 - Microservices are small and focused, reducing complexity.
 - Services can be internally changed or replaced without global impact.
 
-Yet, it comes with its own set of drawbacks. It's not very clear how to design modules in microservices architecture in such way that can enforce this benefits.
+Yet, they come with their own set of drawbacks. It's not very clear how to design modules in microservices architecture in a way that can enforce these benefits.
 
 Modularity in software development can be boiled down into three guiding principles:
 - Strong encapsulation: hide implementation details inside components, leading to low coupling between different parts. Teams can work in isolation on decoupled parts of the system.
@@ -63,14 +63,14 @@ Solution is pretty straightforward. Externalize all application configuration in
 
 ## Using Gradle for creating modules
 
-Gradle in few words:
+Let me describe Gradle in a few words:
 
 ### Gradle  multi-module project
 
-Multi-project builds helps with modularization. It allows a person to concentrate on one area of work in a larger project, while Gradle takes care of dependencies from other parts of the project.
+Multi-project builds help with modularization. This allows a person to concentrate on one area of work in a larger project, while Gradle takes care of dependencies from other parts of the project.
 
 #### Create a root project
-The first step is to create a folder for the new project and add a Gradle Wrapper to the project. If you use the Build Init plugin then the necessary settings and build scripts will also be added.
+The first step is to create a folder for the new project and add a Gradle Wrapper to the project. If you use the Build Init plugin, then the necessary settings and build scripts will also be added.
 
 ```bash
 $ mkdir creating-multi-project-builds
@@ -115,7 +115,7 @@ dependencies {
 }
 ```
 
-Add liblary to the root project:
+Add a liblary to the root project:
 
 `settings.gradle`
 ```groovy
@@ -142,7 +142,7 @@ dependencies {
 
 >1️⃣ Add `greeting-library` as a dependency for `greeter`
 
-Add liblary to the root project:
+Add a library to the root project:
 
 `settings.gradle`
 ```groovy
@@ -194,9 +194,9 @@ dependencies {
 
 >1️⃣ Add a Maven repository
 2️⃣ Add .bom as a platform dependency
-3️⃣ Use dependency without version. It will provided from .bom
+3️⃣ Use dependency without version. It will be provided from .bom
 
-Alternatively you can use [Spring Dependency Management Plugin](https://docs.spring.io/dependency-management-plugin/docs/current/reference/html/) for Gradle dependency management.
+Alternatively, you can use [Spring Dependency Management Plugin](https://docs.spring.io/dependency-management-plugin/docs/current/reference/html/) for Gradle dependency management.
 
 ## Credits 
 1 [Oreilly. Modules and microservices](https://www.oreilly.com/radar/modules-vs-microservices/)  
