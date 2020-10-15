@@ -150,7 +150,7 @@ EOF
 
 #### Run application
 
-An a app we are going to run is a click counter. For exmple, User1 clicks on the button. Then users can see for how many times they clicked.
+The app we are going to run is a click counter. For example, User1 clicks on the button. Then, users can see how many times they or other users clicked.
 
 ```
 POST localhost:8080/click-receiver/api/v1/click
@@ -181,7 +181,7 @@ ClickCounter ->- Web: Get all clicks response
 
 ![Kafka Clicker Application](/img/kafka-clicker-application.png)
 
-You can run application with this scripts:
+You can run the application with this scripts:
 
 ```bash
 cd click-counter 1️⃣
