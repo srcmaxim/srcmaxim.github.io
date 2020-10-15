@@ -150,16 +150,16 @@ EOF
 
 #### Run application
 
-An a app we are going to run is a click counter. For exmple User1 click on the button. Then they will see how many times they clicked.
+An a app we are going to run is a click counter. For exmple, User1 clicks on the button. Then users can see for how many times they clicked.
 
 ```
-POST localhost:8080/api/v1/click
+POST localhost:8080/click-receiver/api/v1/click
 
 {
   "name": "User1"
 }
 
-GET localhost:8081/api/v1/click
+GET localhost:8081/click-counter/api/v1/click
 
 {
   "User1": 1
@@ -201,7 +201,9 @@ java -jar click-receiver.jar -Dspring.kafka.bootstrap-servers=$KAFKA_SECURE
 
 ### Code Refference
 
-You can find detailed code in [GitHub](https://github.com/srcmaxim/aws-msk-setup)
+You can find detailed code in my GitHub:
+- [AWS MSK CloudFormation files](https://github.com/srcmaxim/aws-msk-setup)
+- [a simple Kafka Application. Click counter app](https://github.com/srcmaxim/kafka-application.git)
 
 <script src="https://gist.github.com/srcmaxim/32300b5e3acf071305372c07e8fecc76.js"></script>
 
