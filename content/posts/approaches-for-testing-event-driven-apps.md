@@ -5,17 +5,17 @@ draft: false
 ---
 
 ## Introdunction
-Event-driven apps means that one part of the application keeps producing records to a topic and another part of the application keeps consuming the records and continuously processes them based on business rules. 
+Event-driven apps mean that one part of the application keeps producing records to a topic and another part of the application keeps consuming the records and continuously processes them based on business rules. 
 
 The records, partitions, offsets, exception scenarios, etc. keep on changing, making it difficult to think in terms of what to test, when to test, and how to test.
 
-In this article I describe basic approaches for testing microservice applications built using Kafka. 
+In this article, I describe basic approaches for testing microservice applications built using Kafka. 
 
 ## Consumer-driven contract test
 
 Evolving a community of service providers and consumers provides coupling issues that arise when service providers change parts of their contract, particularly document schemas, and identifies two well-understood strategies - adding schema extension points and performing "just enough" validation of received messages - for mitigating such issues. [See consumer-driven contract from Martin Fovler](https://www.martinfowler.com/articles/consumerDrivenContracts.html).
 
-Consumer-driven contracts are an essential part of a mature microservice testing, enabling independent service deployments. But in addition, we want to point out that consumer-driven contract testing is a technique and an attitude that requires no special tool to implement.
+Consumer-driven contracts are an essential part of a mature microservice testing, enabling independent service deployments. But in addition, I want to point out that consumer-driven contract testing is a technique and an attitude that requires no special tool to implement.
 
 When two independently developed services are collaborating, changes to the supplier’s API can cause failures for all its consumers. Consuming services usually cannot test against live suppliers since such tests are slow and brittle, so it’s best to use Test Doubles, leading to the danger that the test doubles get out of sync with the real supplier service. Consumer teams can protect themselves from these failures by using [integration contract tests](https://martinfowler.com/bliki/ContractTest.html) – tests that compare actual service responses with test values.
 
@@ -223,7 +223,7 @@ class KafkaWorkshopApplicationTests extends AbstractIntegrationTest {
 2️⃣ KafkaProperties hold specific props for Kafka and methods for creating props for `Consumer` and `Producer`  
 3️⃣ `DefaultKafkaConsumerFactory` uses plain `StringDeserializer` on top of `KafkaAvroDeserializer` although other binary formats is supported
 
-You can found [code examples](https://github.com/srcmaxim/kafka-avro-integration-test) in my Github.
+You can find [code examples](https://github.com/srcmaxim/kafka-avro-integration-test) in my Github.
 
 ## TopologyTestDriver
 
