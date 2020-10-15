@@ -115,10 +115,10 @@ ACCOUNT_ID=
 CLUSTER_NAME=MSKCluster
 CLUSTER_ID=
 
-ZOOKEPER=$(aws kafka describe-cluster --region $REGION --cluster-arn arn:aws:kafka:eu-west-1:$ACCOUNT_ID:cluster/$CLUSTER_NAME/$CLUSTER_ID | jq ClusterInfo.ZookeeperConnectString) 2️⃣
+ZOOKEPER=$(aws kafka describe-cluster --region $REGION --cluster-arn arn:aws:kafka:eu-west-1:$ACCOUNT_ID:cluster/$CLUSTER_NAME/$CLUSTER_ID | jq .ClusterInfo.ZookeeperConnectString) 2️⃣
 
-KAFKA=$(aws kafka get-bootstrap-brokers --region $REGION  --cluster-arn arn:aws:kafka:eu-west-1:$ACCOUNT_ID:cluster/$CLUSTER_NAME/$CLUSTER_ID | jq BootstrapBrokerString) 3️⃣
-KAFKA_SECURE=$(aws kafka get-bootstrap-brokers --region $REGION  --cluster-arn arn:aws:kafka:eu-west-1:$ACCOUNT_ID:cluster/$CLUSTER_NAME/$CLUSTER_ID | jq BootstrapBrokerString) 4️⃣
+KAFKA=$(aws kafka get-bootstrap-brokers --region $REGION  --cluster-arn arn:aws:kafka:eu-west-1:$ACCOUNT_ID:cluster/$CLUSTER_NAME/$CLUSTER_ID | jq .BootstrapBrokerString) 3️⃣
+KAFKA_SECURE=$(aws kafka get-bootstrap-brokers --region $REGION  --cluster-arn arn:aws:kafka:eu-west-1:$ACCOUNT_ID:cluster/$CLUSTER_NAME/$CLUSTER_ID | jq .BootstrapBrokerString) 4️⃣
 
 
 wget https://archive.apache.org/dist/kafka/2.2.1/kafka_2.12-2.2.1.tgz 5️⃣
@@ -139,7 +139,7 @@ EOF
 ./kafka-console-consumer.sh --bootstrap-server $KAFKA_SECURE --consumer.config client.properties --topic click --from-beginning 9️⃣
 ```
 
-> 1️⃣ Get [jq](https://stedolan.github.io/jq/) JSON processor and Java  
+> 1️⃣ Get [jq](https://stedolan.github.io/jq/) (JSON processor) and Java  
 2️⃣ Get connection string for Zookeper  
 3️⃣ Get connection string for plain Kafka  
 4️⃣ Get connection string for SSL Kafka  
