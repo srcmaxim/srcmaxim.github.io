@@ -203,7 +203,7 @@ java -jar click-receiver.jar -Dspring.kafka.bootstrap-servers=$KAFKA_SECURE
 
 You can find detailed code in my GitHub:
 - [AWS MSK CloudFormation files](https://github.com/srcmaxim/aws-msk-setup)
-- [a simple Kafka Application. Click counter app](https://github.com/srcmaxim/kafka-application.git)
+- [a simple Kafka Application. Click counter app](https://github.com/srcmaxim/kafka-application)
 
 <script src="https://gist.github.com/srcmaxim/32300b5e3acf071305372c07e8fecc76.js"></script>
 
